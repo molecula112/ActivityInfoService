@@ -7,11 +7,11 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Document("Activity")
 @AllArgsConstructor
-@NoArgsConstructor
 @Data
 public class Activity {
     @Id
@@ -22,6 +22,9 @@ public class Activity {
     private String toDate;
     private int totalPointCount;
     private String userId;
-    @DBRef
     private List<QuestionInfo> questionInfos;
+
+    public Activity() {
+        questionInfos = new ArrayList<>();
+    }
 }

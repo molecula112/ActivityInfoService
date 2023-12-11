@@ -85,7 +85,7 @@ public class UserController {
         activity.setUserId(userId);
         user.addActivity(activity);
         activityRepository.save(activity);
-        userRepository.save(user); // Добавьте сохранение пользователя
+        userRepository.save(user);
         return "redirect:/users/" + userId;
     }
 
@@ -101,8 +101,12 @@ public class UserController {
     public String addQuestionInfoToActivity(@PathVariable String userId, @PathVariable String activityId, @ModelAttribute QuestionInfo questionInfo) {
         Activity activity = activityRepository.findById(activityId).orElseThrow(() -> new RuntimeException("Activity not found"));
         activity.getQuestionInfos().add(questionInfo);
+        questionInfo.setActivityId(activityId);
+        activity.setTotalPointCount(activity.getTotalPointCount() + questionInfo.getPoints());
         activityRepository.save(activity);
-        return "redirect:/users/" + userId + "/activities/" + activityId;
+        //return "redirect:/users/" + userId + "/activities/" + activityId;
+        return "redirect:/users/" + userId;
+
     }
 
     @GetMapping("/activities/new")
