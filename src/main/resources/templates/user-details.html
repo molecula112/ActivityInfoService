@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>User Details</title>
+    </head>
+    <body>
+    <h1>User Details</h1>
+    <p>Name: <span th:text="${user.name}"></span></p>
+
+    <h2>Activities</h2>
+    <ul>
+        <li th:each="activity : ${user.activities}">
+            <span th:text="${activity.activityName}"></span>
+            <ul>
+                <li>Activity Name: <span th:text="${activity.activityName}"></span></li>
+                <li>Mentor Name: <span th:text="${activity.mentorName}"></span></li>
+                <li>From Date: <span th:text="${activity.fromDate}"></span></li>
+                <li>To Date: <span th:text="${activity.toDate}"></span></li>
+                <li>Total Point Count: <span th:text="${activity.totalPointCount}"></span></li>
+            </ul>
+            <a th:href="@{/users/{userId}/activities/{activityId}/question-info(userId=${user.id}, activityId=${activity.id})}">Add Question Info</a>
+        </li>
+    </ul>
+
+    <h2>Add Activity</h2>
+    <form th:action="@{/users/{userId}/activities(userId=${user.id})}" th:object="${activity}" method="post">
+        <input type="text" th:field="*{activityName}" placeholder="Activity name" required/>
+        <input type="text" th:field="*{mentorName}" placeholder="Mentor name" required/>
+        <input type="text" th:field="*{fromDate}" placeholder="From date" required/>
+        <input type="text" th:field="*{toDate}" placeholder="To date" required/>
+        <input type="number" th:field="*{totalPointCount}" placeholder="Total point count" required/>
+        <button type="submit">Add Activity</button>
+    </form>
+    </body>
+    </html>

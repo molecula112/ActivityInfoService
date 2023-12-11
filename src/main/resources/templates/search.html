@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Results</title>
+</head>
+<body>
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Activity</th>
+    </tr>
+    <tr th:each="user : ${users}">
+        <td th:text="${user.name}"></td>
+        <td><a th:href="@{/users/{userId}(userId=${user.id})}">View Details</a></td>
+    </tr>
+</table>
+</body>
+</html>

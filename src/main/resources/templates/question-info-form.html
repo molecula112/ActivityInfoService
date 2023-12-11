@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Question Info Form</title>
+</head>
+<body>
+<h1>Add Question Info</h1>
+<form th:action="@{/users/{userId}/activities/{activityId}/question-info(userId=${activity.user.id}, activityId=${activity.id})}" th:object="${questionInfo}" method="post">
+    <input type="text" th:field="*{question}" placeholder="Question" required/>
+    <input type="number" th:field="*{points}" placeholder="Points" required/>
+    <button type="submit">Add Question Info</button>
+</form>
+</body>
+</html>
