@@ -19,7 +19,8 @@
                 <li>To Date: <span th:text="${activity.toDate}"></span></li>
                 <li>Total Point Count: <span th:text="${activity.totalPointCount}"></span></li>
             </ul>
-            <a th:href="@{/users/{userId}/activities/{activityId}/question-info(userId=${user.id}, activityId=${activity.id})}">Add Question Info</a>
+            <a th:href="@{/users/{userId}/activities/{activityId}/question-info(userId=${user.id}, activityId=${activity.id})}">Add Question Info</a><br>
+            <a th:href="@{/activities/{activityId}/question-info-activity(activityId=${activity.id})}">View Question Info</a>
         </li>
     </ul>
 

@@ -109,7 +109,7 @@ public class UserController {
         return "redirect:/users/" + user.getId();
     }
 
-    @GetMapping("/question-info-activity/{activityId}")
+    @GetMapping("/activities/{activityId}/question-info-activity")
     public String showQuestionInfoActivity(@PathVariable String activityId, Model model) {
         Activity activity = activityRepository.findById(activityId).orElseThrow(() -> new RuntimeException("Activity not found"));
         model.addAttribute("activity", activity);
