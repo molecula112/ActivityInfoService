@@ -3,9 +3,11 @@ package com.ybondarenko.ActivityInfo.controller;
 import com.ybondarenko.ActivityInfo.entity.Activity;
 import com.ybondarenko.ActivityInfo.entity.QuestionInfo;
 import com.ybondarenko.ActivityInfo.entity.User;
-import com.ybondarenko.ActivityInfo.repository.ActivityRepository;
-import com.ybondarenko.ActivityInfo.repository.QuestionInfoRepository;
-import com.ybondarenko.ActivityInfo.repository.UserRepository;
+import com.ybondarenko.ActivityInfo.exceptions.ActivityNotFoundException;
+import com.ybondarenko.ActivityInfo.exceptions.UserNotFoundException;
+import com.ybondarenko.ActivityInfo.service.ActivityService;
+import com.ybondarenko.ActivityInfo.service.UserService;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -13,17 +15,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
+@AllArgsConstructor
 public class UserController {
 
-    private final UserRepository userRepository;
-    private final ActivityRepository activityRepository;
-    private final QuestionInfoRepository questionInfoRepository;
-
-    public UserController(UserRepository userRepository, ActivityRepository activityRepository, QuestionInfoRepository questionInfoRepository) {
-        this.userRepository = userRepository;
-        this.activityRepository = activityRepository;
-        this.questionInfoRepository = questionInfoRepository;
-    }
+    private final UserService userService;
+    private final ActivityService activityService;
 
     @GetMapping("/")
     public String showHomePage(Model model) {
@@ -33,7 +29,7 @@ public class UserController {
 
     @PostMapping("/users/search")
     public String searchUser(@ModelAttribute User user, Model model) {
-        List<User> users = userRepository.findByName(user.getName());
+        List<User> users = userService.findByName(user.getName());
         if (users.isEmpty()) {
             return "redirect:/activities/new";
         } else {
@@ -43,9 +39,9 @@ public class UserController {
     }
 
     @GetMapping("/users/{userId}")
-    public String showUserDetails(@PathVariable String userId, Model model) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-        List<Activity> activities = activityRepository.findByUserId(userId);
+    public String showUserDetails(@PathVariable String userId, Model model) throws UserNotFoundException {
+        User user = userService.findById(userId);
+        List<Activity> activities = activityService.findByUserId(userId);
         user.setActivities(activities);
         model.addAttribute("user", user);
         model.addAttribute("activity", new Activity());
@@ -53,66 +49,34 @@ public class UserController {
     }
 
     @PostMapping("/users/{userId}/activities")
-    public String addActivityToUser(@PathVariable String userId, @ModelAttribute Activity activity) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+    public String addActivityToUser(@PathVariable String userId,
+                                    @ModelAttribute Activity activity) throws UserNotFoundException {
+        User user = userService.findById(userId);
         activity.setUserId(userId);
         user.addActivity(activity);
-        activityRepository.save(activity);
-        userRepository.save(user);
+        activityService.save(activity);
+        userService.save(user);
         return "redirect:/users/" + userId;
     }
 
     @GetMapping("/users/{userId}/activities/{activityId}/question-info")
-    public String showQuestionInfoForm(@PathVariable String userId, @PathVariable String activityId, Model model) {
-        Activity activity = activityRepository.findById(activityId).orElseThrow(() -> new RuntimeException("Activity not found"));
+    public String showQuestionInfoForm(@PathVariable String userId,
+                                       @PathVariable String activityId, Model model) throws ActivityNotFoundException {
+        Activity activity = activityService.findById(activityId);
         model.addAttribute("activity", activity);
         model.addAttribute("questionInfo", new QuestionInfo());
         return "question-info-form";
     }
 
     @PostMapping("/users/{userId}/activities/{activityId}/question-info")
-    public String addQuestionInfoToActivity(@PathVariable String userId, @PathVariable String activityId, @ModelAttribute QuestionInfo questionInfo) {
-        Activity activity = activityRepository.findById(activityId).orElseThrow(() -> new RuntimeException("Activity not found"));
+    public String addQuestionInfoToActivity(@PathVariable String userId,
+                                            @PathVariable String activityId,
+                                            @ModelAttribute QuestionInfo questionInfo) throws ActivityNotFoundException {
+        Activity activity = activityService.findById(activityId);
         activity.getQuestionInfos().add(questionInfo);
         questionInfo.setActivityId(activityId);
         activity.setTotalPointCount(activity.getTotalPointCount() + questionInfo.getPoints());
-        activityRepository.save(activity);
-        //questionInfoRepository.save(questionInfo);
-        //return "redirect:/users/" + userId + "/activities/" + activityId;
+        activityService.save(activity);
         return "redirect:/users/" + userId;
-    }
-
-    @GetMapping("/activities/new")
-    public String showNewActivityForm(Model model) {
-        model.addAttribute("activity", new Activity());
-        return "new-activity-form";
-    }
-
-    @PostMapping("/activities/new")
-    public String createNewActivity(@RequestParam("name") String name,
-                                    @RequestParam("activityName") String activityName,
-                                    @RequestParam("mentorName") String mentorName,
-                                    @RequestParam("fromDate") String fromDate,
-                                    @RequestParam("toDate") String toDate) {
-        User user = new User();
-        user.setName(name);
-        userRepository.save(user);
-        Activity activity = new Activity();
-        activity.setMentorName(mentorName);
-        activity.setActivityName(activityName);
-        activity.setFromDate(fromDate);
-        activity.setToDate(toDate);
-        activity.setUserId(user.getId());
-        activityRepository.save(activity);
-        userRepository.save(user);
-
-        return "redirect:/users/" + user.getId();
-    }
-
-    @GetMapping("/activities/{activityId}/question-info-activity")
-    public String showQuestionInfoActivity(@PathVariable String activityId, Model model) {
-        Activity activity = activityRepository.findById(activityId).orElseThrow(() -> new RuntimeException("Activity not found"));
-        model.addAttribute("activity", activity);
-        return "question-info-activity";
     }
 }
