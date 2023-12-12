@@ -10,9 +10,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.ArrayList;
 import java.util.List;
 
-@Document("Activity")
-@AllArgsConstructor
 @Data
+@Document("Activity")
 public class Activity {
     @Id
     private String id;
@@ -24,9 +23,16 @@ public class Activity {
     private String userId;
     private List<QuestionInfo> questionInfos;
 
-    public Activity() {
+    public Activity(String mentorName, String activityName, String fromDate, String toDate, String userId) {
+        this.mentorName = mentorName;
+        this.activityName = activityName;
+        this.fromDate = fromDate;
+        this.toDate = toDate;
+        this.userId = userId;
         questionInfos = new ArrayList<>();
     }
 
-
+    public Activity() {
+        questionInfos = new ArrayList<>();
+    }
 }

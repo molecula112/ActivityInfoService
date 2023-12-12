@@ -40,12 +40,7 @@ public class ActivityController {
         User user = new User();
         user.setName(name);
         userService.save(user);
-        Activity activity = new Activity();
-        activity.setMentorName(mentorName);
-        activity.setActivityName(activityName);
-        activity.setFromDate(fromDate);
-        activity.setToDate(toDate);
-        activity.setUserId(user.getId());
+        Activity activity = new Activity(mentorName, activityName, fromDate, toDate, user.getId());
         activityService.save(activity);
         return "redirect:/users/" + user.getId();
     }

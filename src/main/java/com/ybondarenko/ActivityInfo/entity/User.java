@@ -9,8 +9,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.ArrayList;
 import java.util.List;
 
-@Document("User")
 @Data
+@Document("User")
 @AllArgsConstructor
 public class User {
     @Id
