@@ -42,14 +42,6 @@ public class UserController {
         }
     }
 
-//    @GetMapping("/users/{userId}")
-//    public String showUserDetails(@PathVariable String userId, Model model) {
-//        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-//        model.addAttribute("user", user);
-//        model.addAttribute("activity", new Activity());
-//        return "user-details";
-//    }
-
     @GetMapping("/users/{userId}")
     public String showUserDetails(@PathVariable String userId, Model model) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
@@ -60,25 +52,6 @@ public class UserController {
         return "user-details";
     }
 
-
-////    @PostMapping("/users/{userId}/activities")
-////    public String addActivityToUser(@PathVariable String userId, @ModelAttribute Activity activity) {
-////        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-////        activity.setUser(user);
-////        user.addActivity(activity);
-////        activityRepository.save(activity);
-////        return "redirect:/users/" + userId.toString();
-////    }
-//
-//    @PostMapping("/users/{userId}/activities")
-//    public String addActivityToUser(@PathVariable String userId, @ModelAttribute Activity activity, Model model) {
-//        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-//        activity.setUser(user);
-//        user.addActivity(activity);
-//        activityRepository.save(activity);
-//        model.addAttribute("user", user);
-//        return "redirect:/users/" + userId;
-//    }
     @PostMapping("/users/{userId}/activities")
     public String addActivityToUser(@PathVariable String userId, @ModelAttribute Activity activity) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
@@ -104,9 +77,9 @@ public class UserController {
         questionInfo.setActivityId(activityId);
         activity.setTotalPointCount(activity.getTotalPointCount() + questionInfo.getPoints());
         activityRepository.save(activity);
+        //questionInfoRepository.save(questionInfo);
         //return "redirect:/users/" + userId + "/activities/" + activityId;
         return "redirect:/users/" + userId;
-
     }
 
     @GetMapping("/activities/new")
@@ -120,8 +93,7 @@ public class UserController {
                                     @RequestParam("activityName") String activityName,
                                     @RequestParam("mentorName") String mentorName,
                                     @RequestParam("fromDate") String fromDate,
-                                    @RequestParam("toDate") String toDate,
-                                    @RequestParam("totalPointCount") int totalPointCount) {
+                                    @RequestParam("toDate") String toDate) {
         User user = new User();
         user.setName(name);
         userRepository.save(user);
@@ -130,11 +102,17 @@ public class UserController {
         activity.setActivityName(activityName);
         activity.setFromDate(fromDate);
         activity.setToDate(toDate);
-        activity.setTotalPointCount(totalPointCount);
         activity.setUserId(user.getId());
         activityRepository.save(activity);
         userRepository.save(user);
 
         return "redirect:/users/" + user.getId();
+    }
+
+    @GetMapping("/question-info-activity/{activityId}")
+    public String showQuestionInfoActivity(@PathVariable String activityId, Model model) {
+        Activity activity = activityRepository.findById(activityId).orElseThrow(() -> new RuntimeException("Activity not found"));
+        model.addAttribute("activity", activity);
+        return "question-info-activity";
     }
 }

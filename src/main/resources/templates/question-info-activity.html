@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Question Info Activity</title>
+</head>
+<body>
+<h1>Question Info Activity</h1>
+<table>
+    <tr>
+        <th>Question</th>
+        <th>Points</th>
+    </tr>
+    <tr th:each="questionInfo : ${activity.questionInfos}">
+        <td th:text="${questionInfo.question}"></td>
+        <td th:text="${questionInfo.points}"></td>
+    </tr>
+</table>
+</body>
+</html>
