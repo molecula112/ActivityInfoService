@@ -26,8 +26,4 @@ public class User {
         activities.add(activity);
         activity.setUserId(this.id);
     }
-
-    public void removeActivity(Activity activity) {
-        activities.remove(activity);
-    }
 }

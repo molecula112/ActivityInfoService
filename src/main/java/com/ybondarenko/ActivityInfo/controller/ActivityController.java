@@ -8,25 +8,30 @@ import com.ybondarenko.ActivityInfo.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @AllArgsConstructor
+@RequestMapping("/activities")
 public class ActivityController {
 
     private final UserService userService;
     private final ActivityService activityService;
 
-    @GetMapping("/activities/new")
+    @GetMapping("/new")
     public String showNewActivityForm(Model model) {
         model.addAttribute("activity", new Activity());
         return "new-activity-form";
     }
 
-    @PostMapping("/activities/new")
+    @GetMapping("/{activityId}/question-info-activity")
+    public String showQuestionInfoActivity(@PathVariable String activityId, Model model) throws ActivityNotFoundException {
+        Activity activity = activityService.findById(activityId);
+        model.addAttribute("activity", activity);
+        return "question-info-activity";
+    }
+
+    @PostMapping("/new")
     public String createNewActivity(@RequestParam("name") String name,
                                     @RequestParam("activityName") String activityName,
                                     @RequestParam("mentorName") String mentorName,
@@ -43,12 +48,5 @@ public class ActivityController {
         activity.setUserId(user.getId());
         activityService.save(activity);
         return "redirect:/users/" + user.getId();
-    }
-
-    @GetMapping("/activities/{activityId}/question-info-activity")
-    public String showQuestionInfoActivity(@PathVariable String activityId, Model model) throws ActivityNotFoundException {
-        Activity activity = activityService.findById(activityId);
-        model.addAttribute("activity", activity);
-        return "question-info-activity";
     }
 }

@@ -16,18 +16,32 @@ import java.util.List;
 
 @Controller
 @AllArgsConstructor
+@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
     private final ActivityService activityService;
 
-    @GetMapping("/")
-    public String showHomePage(Model model) {
-        model.addAttribute("user", new User());
-        return "home";
+    @GetMapping("/{userId}")
+    public String showUserDetails(@PathVariable String userId, Model model) throws UserNotFoundException {
+        User user = userService.findById(userId);
+        List<Activity> activities = activityService.findByUserId(userId);
+        user.setActivities(activities);
+        model.addAttribute("user", user);
+        model.addAttribute("activity", new Activity());
+        return "user-details";
     }
 
-    @PostMapping("/users/search")
+    @GetMapping("/{userId}/activities/{activityId}/question-info")
+    public String showQuestionInfoForm(@PathVariable String userId,
+                                       @PathVariable String activityId, Model model) throws ActivityNotFoundException {
+        Activity activity = activityService.findById(activityId);
+        model.addAttribute("activity", activity);
+        model.addAttribute("questionInfo", new QuestionInfo());
+        return "question-info-form";
+    }
+
+    @PostMapping("/search")
     public String searchUser(@ModelAttribute User user, Model model) {
         List<User> users = userService.findByName(user.getName());
         if (users.isEmpty()) {
@@ -38,17 +52,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/users/{userId}")
-    public String showUserDetails(@PathVariable String userId, Model model) throws UserNotFoundException {
-        User user = userService.findById(userId);
-        List<Activity> activities = activityService.findByUserId(userId);
-        user.setActivities(activities);
-        model.addAttribute("user", user);
-        model.addAttribute("activity", new Activity());
-        return "user-details";
-    }
-
-    @PostMapping("/users/{userId}/activities")
+    @PostMapping("/{userId}/activities")
     public String addActivityToUser(@PathVariable String userId,
                                     @ModelAttribute Activity activity) throws UserNotFoundException {
         User user = userService.findById(userId);
@@ -59,16 +63,7 @@ public class UserController {
         return "redirect:/users/" + userId;
     }
 
-    @GetMapping("/users/{userId}/activities/{activityId}/question-info")
-    public String showQuestionInfoForm(@PathVariable String userId,
-                                       @PathVariable String activityId, Model model) throws ActivityNotFoundException {
-        Activity activity = activityService.findById(activityId);
-        model.addAttribute("activity", activity);
-        model.addAttribute("questionInfo", new QuestionInfo());
-        return "question-info-form";
-    }
-
-    @PostMapping("/users/{userId}/activities/{activityId}/question-info")
+    @PostMapping("/{userId}/activities/{activityId}/question-info")
     public String addQuestionInfoToActivity(@PathVariable String userId,
                                             @PathVariable String activityId,
                                             @ModelAttribute QuestionInfo questionInfo) throws ActivityNotFoundException {
