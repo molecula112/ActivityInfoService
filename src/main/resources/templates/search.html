@@ -12,7 +12,15 @@
     </tr>
     <tr th:each="user : ${users}">
         <td th:text="${user.name}"></td>
-        <td><a th:href="@{/users/{userId}(userId=${user.id})}">View Details</a></td>
+        <td>
+            <table>
+                <tr th:each="activity : ${user.activities}">
+                    <td th:text="${activity.activityName}"></td>
+                    <td th:text="${activity.totalPointCount}"></td>
+                </tr>
+            </table>
+            <a th:href="@{/users/{userId}(userId=${user.id})}">View Full Details</a>
+        </td>
     </tr>
 </table>
 </body>
