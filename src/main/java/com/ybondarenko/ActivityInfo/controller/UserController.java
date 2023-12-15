@@ -23,7 +23,7 @@ public class UserController {
     private final ActivityService activityService;
 
     @GetMapping("/{userId}")
-    public String showUserDetails(@PathVariable String userId, Model model) throws UserNotFoundException {
+    public String showUserDetails(@PathVariable Long userId, Model model) throws UserNotFoundException {
         User user = userService.findById(userId);
         List<Activity> activities = activityService.findByUserId(userId);
         user.setActivities(activities);
@@ -33,8 +33,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/activities/{activityId}/question-info")
-    public String showQuestionInfoForm(@PathVariable String userId,
-                                       @PathVariable String activityId, Model model) throws ActivityNotFoundException {
+    public String showQuestionInfoForm(@PathVariable Long activityId, Model model) throws ActivityNotFoundException {
         Activity activity = activityService.findById(activityId);
         model.addAttribute("activity", activity);
         model.addAttribute("questionInfo", new QuestionInfo());
@@ -53,7 +52,7 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/activities")
-    public String addActivityToUser(@PathVariable String userId,
+    public String addActivityToUser(@PathVariable Long userId,
                                     @ModelAttribute Activity activity) throws UserNotFoundException {
         User user = userService.findById(userId);
         activity.setUserId(userId);
@@ -64,8 +63,8 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/activities/{activityId}/question-info")
-    public String addQuestionInfoToActivity(@PathVariable String userId,
-                                            @PathVariable String activityId,
+    public String addQuestionInfoToActivity(@PathVariable Long userId,
+                                            @PathVariable Long activityId,
                                             @ModelAttribute QuestionInfo questionInfo) throws ActivityNotFoundException {
         Activity activity = activityService.findById(activityId);
         activity.getQuestionInfos().add(questionInfo);

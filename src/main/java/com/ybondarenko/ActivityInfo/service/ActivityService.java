@@ -16,11 +16,11 @@ public class ActivityService {
 
     private final ActivityRepository activityRepository;
 
-    public List<Activity> findByUserId(String userId) {
+    public List<Activity> findByUserId(Long userId) {
         return activityRepository.findByUserId(userId);
     }
 
-    public Activity findById(String ActivityId) throws ActivityNotFoundException {
+    public Activity findById(Long ActivityId) throws ActivityNotFoundException {
         return activityRepository.findById(ActivityId).orElseThrow(() -> new ActivityNotFoundException("User not found"));
     }
 

@@ -25,7 +25,7 @@ public class ActivityController {
     }
 
     @GetMapping("/{activityId}/question-info-activity")
-    public String showQuestionInfoActivity(@PathVariable String activityId, Model model) throws ActivityNotFoundException {
+    public String showQuestionInfoActivity(@PathVariable Long activityId, Model model) throws ActivityNotFoundException {
         Activity activity = activityService.findById(activityId);
         model.addAttribute("activity", activity);
         return "question-info-activity";
@@ -34,13 +34,11 @@ public class ActivityController {
     @PostMapping("/new")
     public String createNewActivity(@RequestParam("name") String name,
                                     @RequestParam("activityName") String activityName,
-                                    @RequestParam("mentorName") String mentorName,
-                                    @RequestParam("fromDate") String fromDate,
-                                    @RequestParam("toDate") String toDate) {
+                                    @RequestParam("mentorName") String mentorName) {
         User user = new User();
         user.setName(name);
         userService.save(user);
-        Activity activity = new Activity(mentorName, activityName, fromDate, toDate, user.getId());
+        Activity activity = new Activity(mentorName, activityName, user.getId());
         activityService.save(activity);
         return "redirect:/users/" + user.getId();
     }

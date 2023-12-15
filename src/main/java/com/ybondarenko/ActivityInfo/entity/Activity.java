@@ -1,33 +1,35 @@
 package com.ybondarenko.ActivityInfo.entity;
 
-import lombok.AllArgsConstructor;
+import jakarta.persistence.*;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@Document("Activity")
+@Entity
+@Table(name = "activity")
 public class Activity {
     @Id
-    private String id;
+    @GeneratedValue
+    private Long id;
+    @Column(name = "mentor_name")
     private String mentorName;
+    @Column(name = "activity_name")
     private String activityName;
-    private String fromDate;
-    private String toDate;
+    @Column(name = "date")
+    private String date;
+    @Column(name = "total_point_count")
     private int totalPointCount;
-    private String userId;
+    @Column(name = "user_id")
+    private Long userId;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "activity_id")
     private List<QuestionInfo> questionInfos;
 
-    public Activity(String mentorName, String activityName, String fromDate, String toDate, String userId) {
+    public Activity(String mentorName, String activityName, Long userId) {
         this.mentorName = mentorName;
         this.activityName = activityName;
-        this.fromDate = fromDate;
-        this.toDate = toDate;
         this.userId = userId;
         questionInfos = new ArrayList<>();
     }

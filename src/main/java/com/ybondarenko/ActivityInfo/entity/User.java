@@ -1,21 +1,25 @@
 package com.ybondarenko.ActivityInfo.entity;
 
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@Document("User")
+@Entity
+@Table(name = "user")
 @AllArgsConstructor
 public class User {
     @Id
-    private String id;
+    @GeneratedValue
+    private Long id;
+    @Column(name = "name")
     private String name;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
     private List<Activity> activities;
 
     public User() {
