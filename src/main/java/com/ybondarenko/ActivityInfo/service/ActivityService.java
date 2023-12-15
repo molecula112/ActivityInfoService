@@ -1,9 +1,7 @@
 package com.ybondarenko.ActivityInfo.service;
 
 import com.ybondarenko.ActivityInfo.entity.Activity;
-import com.ybondarenko.ActivityInfo.entity.User;
 import com.ybondarenko.ActivityInfo.exceptions.ActivityNotFoundException;
-import com.ybondarenko.ActivityInfo.exceptions.UserNotFoundException;
 import com.ybondarenko.ActivityInfo.repository.ActivityRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
