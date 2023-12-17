@@ -17,12 +17,6 @@ public class ActivityController {
 
     private final ActivityService activityService;
 
-    @GetMapping("/new")
-    public String showNewActivityForm(Model model) {
-        model.addAttribute("activity", new Activity());
-        return "new-user-form";
-    }
-
     @GetMapping("/{activityId}/question-info-activity")
     public String showQuestionInfoActivity(@PathVariable String activityId, Model model) throws ActivityNotFoundException {
         Activity activity = activityService.findById(activityId);

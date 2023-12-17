@@ -42,6 +42,11 @@ public class UserController {
         return "question-info-form";
     }
 
+    @GetMapping("/new")
+    public String showNewActivityForm() {
+        return "new-user-form";
+    }
+
     @PostMapping("/new")
     public String createNewUser(@RequestParam("name") String name) {
         User user = new User();
@@ -54,7 +59,7 @@ public class UserController {
     public String searchUser(@ModelAttribute User user, Model model) {
         List<User> users = userService.findByName(user.getName());
         if (users.isEmpty()) {
-            return "redirect:/activities/new";
+            return "redirect:/users/new";
         } else {
             model.addAttribute("users", users);
             return "search";
