@@ -1,10 +1,7 @@
 package com.ybondarenko.ActivityInfo.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
@@ -17,18 +14,21 @@ public class Activity {
     private String id;
     private String mentorName;
     private String activityName;
-    private String fromDate;
-    private String toDate;
+    private String date;
     private int totalPointCount;
     private String userId;
     private List<QuestionInfo> questionInfos;
 
-    public Activity(String mentorName, String activityName, String fromDate, String toDate, String userId) {
+    public Activity(String mentorName, String activityName, String userId) {
         this.mentorName = mentorName;
         this.activityName = activityName;
-        this.fromDate = fromDate;
-        this.toDate = toDate;
         this.userId = userId;
+        questionInfos = new ArrayList<>();
+    }
+
+    public Activity(String mentorName, String activityName) {
+        this.mentorName = mentorName;
+        this.activityName = activityName;
         questionInfos = new ArrayList<>();
     }
 

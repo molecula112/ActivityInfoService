@@ -12,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -33,12 +35,19 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/activities/{activityId}/question-info")
-    public String showQuestionInfoForm(@PathVariable String userId,
-                                       @PathVariable String activityId, Model model) throws ActivityNotFoundException {
+    public String showQuestionInfoForm(@PathVariable String activityId, Model model) throws ActivityNotFoundException {
         Activity activity = activityService.findById(activityId);
         model.addAttribute("activity", activity);
         model.addAttribute("questionInfo", new QuestionInfo());
         return "question-info-form";
+    }
+
+    @PostMapping("/new")
+    public String createNewUser(@RequestParam("name") String name) {
+        User user = new User();
+        user.setName(name);
+        userService.save(user);
+        return "redirect:/users/" + user.getId();
     }
 
     @PostMapping("/search")
@@ -71,6 +80,7 @@ public class UserController {
         activity.getQuestionInfos().add(questionInfo);
         questionInfo.setActivityId(activityId);
         activity.setTotalPointCount(activity.getTotalPointCount() + questionInfo.getPoints());
+        activity.setDate(LocalDate.now().toString());
         activityService.save(activity);
         return "redirect:/users/" + userId;
     }
